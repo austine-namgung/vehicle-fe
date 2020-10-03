@@ -1,0 +1,11 @@
+##############
+### dev
+##############
+
+server:
+ port: 8009
+
+ 
+spring:
+  profiles: dev  
+      

@@ -1,0 +1,19 @@
+##############
+### local
+##############
+
+server:
+ port: 8009
+
+ 
+spring:
+  profiles: local  
+
+  
+
+api:
+  vehicle: 
+    url: http://localhost:9001
+  common:
+    url: http://localhost:9002
+    
