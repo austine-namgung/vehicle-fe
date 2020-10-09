@@ -15,7 +15,6 @@ import org.springframework.web.reactive.function.client.WebClient;
 @Service
 public class VehicleServiceImpl implements VehicleService {
 
-    private static String SUCCESS = "Y";
 
     private final WebClient vehicleWebClient;
     private final WebClient commonWebClient;
