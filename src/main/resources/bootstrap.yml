@@ -1,0 +1,17 @@
+
+
+spring: 
+  profiles:
+    active: local
+  application:
+    name: vehicle-fe
+  cloud:
+    config:
+      uri: http://root:1234@localhost:8888
+
+management:
+  endpoints:  
+    web:
+      exposure:
+        include: '*'
+

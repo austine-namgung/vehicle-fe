@@ -1,3 +1,14 @@
 GET http://localhost:8009/list
 
+###
+GET http://localhost:8009/configTest
+
+###
+//config 변경사항 반영 
+POST http://localhost:8009/actuator/refresh
+
+###
+GET http://localhost:8009/actuator/health
+
+
 
