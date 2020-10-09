@@ -6,7 +6,10 @@ import java.util.stream.Collectors;
 import com.example.vehiclefe.model.Code;
 import com.example.vehiclefe.model.Vehicle;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.client.loadbalancer.LoadBalanced;
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
@@ -17,52 +20,67 @@ public class VehicleServiceImpl implements VehicleService {
 
     private static String SUCCESS = "Y";
 
-    private final WebClient vehicleWebClient;
-    private final WebClient commonWebClient;
+    @Autowired
+    private  WebClient.Builder webClientBuilder;
 
-    public VehicleServiceImpl(@Value("${api.vehicle.url}") final String vehicleApiUrl, @Value("${api.common.url}") final String commonApiUrl) {
-        vehicleWebClient = WebClient.builder().baseUrl(vehicleApiUrl)
-                .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .build();
+    @Value("${api.vehicle.url}")
+    private String vehicleApiUrl;
+    @Value("${api.common.url}")
+    private String commonApiUrl;
 
-        commonWebClient = WebClient.builder().baseUrl(commonApiUrl)               
-                .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)               
-                .build();
-    }
+    // @Bean
+    // @LoadBalanced
+    // public WebClient vehicleWebClient(String vehicleApiUrl) {
+    //     return WebClient.builder().baseUrl(vehicleApiUrl)
+    //             .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE).build();
+
+    // }
+
+    // @Bean
+    // @LoadBalanced
+    // public WebClient commonWebClient(String commonApiUrl) {
+    //     return WebClient.builder().baseUrl(commonApiUrl)
+    //             .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE).build();
+
+    // }
 
     @Override
     public List<Vehicle> vehicleList() {
 
-        List<Vehicle> vehicleList =  vehicleWebClient.get().uri("/api/vehicles").retrieve().bodyToFlux(Vehicle.class).collectList().block();
+        List<Vehicle> vehicleList = webClientBuilder.build().get().uri(vehicleApiUrl+"/api/vehicles").retrieve().bodyToFlux(Vehicle.class)
+                .collectList().block();
         List<Code> categoryList = commonCategoryList();
         List<Code> modelList = commonModelList();
-        return mappedCodeNameVehicleList(vehicleList, categoryList,modelList);
-        
+        return mappedCodeNameVehicleList(vehicleList, categoryList, modelList);
+
     }
 
     @Override
     public List<Code> commonCategoryList() {
-        return  commonWebClient.get().uri("/api/common/categories").retrieve().bodyToFlux(Code.class).collectList().block();
-        
+        return webClientBuilder.build().get().uri(commonApiUrl+"/api/common/categories").retrieve().bodyToFlux(Code.class).collectList()
+                .block();
+
     }
 
     @Override
     public List<Code> commonModelList() {
-        return  commonWebClient.get().uri("/api/common/models").retrieve().bodyToFlux(Code.class).collectList().block();
+        return webClientBuilder.build().get().uri(commonApiUrl+"/api/common/models").retrieve().bodyToFlux(Code.class).collectList().block();
     }
 
-    private List<Vehicle>  mappedCodeNameVehicleList(List<Vehicle> vehicleList,List<Code> categoryList,List<Code> modelList ){
+    private List<Vehicle> mappedCodeNameVehicleList(List<Vehicle> vehicleList, List<Code> categoryList,
+            List<Code> modelList) {
 
         return vehicleList.stream().map(v -> {
-            Code category =  categoryList.stream().filter(c -> c.getCodeId().equals(v.getCategory())).findFirst().orElse(null);
-            v.setCategoryName(category.getCodeName()); 
-            
-            Code model =  modelList.stream().filter(m -> m.getCodeId().equals(v.getModel())).findFirst().orElse(null);
-            v.setModelName(model.getCodeName()); 
+            Code category = categoryList.stream().filter(c -> c.getCodeId().equals(v.getCategory())).findFirst()
+                    .orElse(null);
+            v.setCategoryName(category.getCodeName());
 
-            return v;              
-         }).collect(Collectors.toList());
+            Code model = modelList.stream().filter(m -> m.getCodeId().equals(v.getModel())).findFirst().orElse(null);
+            v.setModelName(model.getCodeName());
+
+            return v;
+        }).collect(Collectors.toList());
 
     }
-    
+
 }
