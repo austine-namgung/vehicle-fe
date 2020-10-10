@@ -1,0 +1,35 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: vehicle-fe-gateway
+  namespace: front
+spec:
+  selector:
+    istio: ingressgateway # use istio default controller
+  servers:
+  - port:
+      number: 80
+      name: http
+      protocol: HTTP
+    hosts:
+    - "*"
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: vehicle-fe-vs
+  namespace: front
+spec:
+  hosts:
+  - "*"
+  gateways:
+  - vehicle-fe-gateway
+  http:
+  - match:
+    - uri:
+        prefix: /list
+    route:
+    - destination:
+        host: vehicle-fe-svc
+        port:
+          number: 8080

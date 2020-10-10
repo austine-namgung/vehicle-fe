@@ -2,3 +2,9 @@
 GET http://localhost:8009/list
 
 
+###
+##hystrix 화면 
+http://localhost:8009/hystrix
+
+## 등록한 URL
+http://localhost:8009/mon/hystrix.stream

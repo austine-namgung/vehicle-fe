@@ -7,17 +7,15 @@ server:
 
  
 spring:
-  profiles: local  
+  profiles: kind  
 
   
 
 api:
-  vehicle: 
-    # url: http://host.docker.internal:8000/vehicle-api
-    url: http://localhost:9001
-  common:
-    # url: http://host.docker.internal:8000/common-api
-    url: http://locahost:9002
+  vehicle:     
+    url: http://vehicle-api-svc.vehicle.svc.cluster.local
+  common:    
+    url: http://common-api-svc.common.svc.cluster.local
    
    
 hystrix:

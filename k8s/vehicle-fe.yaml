@@ -1,0 +1,68 @@
+apiVersion: v1
+kind: Service
+
+metadata:
+  name: vehicle-fe-svc
+  namespace: front
+spec:
+  selector:
+    app: vehicle-fe
+  
+  ports:
+  - protocol: TCP
+    port: 8080 
+    targetPort: http
+   # nodePort: 30001
+  #type: NodePort
+  
+
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vehicle-fe
+  namespace: front
+  labels:
+    app: vehicle-fe
+    
+   
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: vehicle-fe
+  template:
+    metadata:
+      labels:
+        app: vehicle-fe
+       
+    spec:
+      containers:
+      - name: vehicle-fe
+        image: vehicle-fe
+        imagePullPolicy: Never
+        ports:
+        - name: http
+          containerPort: 8009
+        volumeMounts:   
+        - name: log-volume
+          mountPath: /logs   
+      - name: fluent-bit
+        image: fluent/fluent-bit  
+        volumeMounts:   
+        - name: log-volume
+          mountPath: /logs   
+        - name: config  
+          mountPath: /fluent-bit/etc/fluent-bit.conf
+          subPath: fluent-bit.conf
+        - name: config
+          mountPath: /fluent-bit/etc/parsers_springboot.conf
+          subPath: parsers_springboot.conf
+      volumes:
+      - name: log-volume
+        emptyDir: {}     
+      - name: config
+        configMap:
+          name: fluent-bit-config
+        

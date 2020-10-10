@@ -2,6 +2,7 @@ package com.example.vehiclefe.controller;
 
 import java.util.List;
 
+import com.example.common.model.Code;
 import com.example.vehiclefe.model.Vehicle;
 import com.example.vehiclefe.service.VehicleService;
 
@@ -18,7 +19,13 @@ public class VehicleController {
     @GetMapping("/list")
     public List<Vehicle> list(){
         List<Vehicle> vehicleList =  service.vehicleList();
-        return vehicleList;
+        List<Code> categoryList = service.commonCategoryList();
+        List<Code> modelList = service.commonModelList();
+        return service.mappedCodeNameVehicleList(vehicleList, categoryList,modelList);
+         
     }
+
+
+    
 
 }
