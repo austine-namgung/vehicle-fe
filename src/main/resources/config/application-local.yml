@@ -12,11 +12,9 @@ spring:
   
 
 api:
-  vehicle: 
-    # url: http://host.docker.internal:8000/vehicle-api
+  vehicle:     
     url: http://localhost:9001
-  common:
-    # url: http://host.docker.internal:8000/common-api
+  common:   
     url: http://locahost:9002
    
    
