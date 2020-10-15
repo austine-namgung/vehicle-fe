@@ -1,0 +1,17 @@
+{
+  "mode": "dev",
+  "auth0": {
+    "dev": {
+      "domain": "osc-korea.auth0.com",
+      "clientId": "XFvKpnW03WMYpE35D1BhA6raf3eXtUlq",
+      "audience":"http://localhost:8000/",
+      "redirectUrl" :"http://localhost:8011/"
+    },
+    "prod": {
+      "domain": "production-skcnc.us.auth0.com",
+      "clientId": "c60W5E6s8YXBuKIaY7czMIyAhRecoVx5",
+      "audience":"https://api.osckorea.com/",
+      "redirectUrl" :"https://auth0.osckorea.com/univ/"
+    }
+  }
+}
