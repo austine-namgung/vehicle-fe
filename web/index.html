@@ -41,7 +41,8 @@
                     <a class="nav-link" href="#">JWT</a>
                 </li>
             </ul>
-            <a class="btn btn-outline-primary d-none" href="#" id="btnSignIn">Sign in</a>
+<!--            <a class="btn btn-outline-primary d-none" href="#" id="btnSignInNormal">Normal Sign in</a>-->
+            <a class="btn btn-outline-primary d-none" href="#" id="btnSignInJWT">JWT Sign in</a>
             <a class="btn btn-outline-danger d-none" href="#" id="btnSignOut">Sign out</a>
         </div>
     </nav>
@@ -49,12 +50,25 @@
 
 <main role="main" class="flex-shrink-0">
     <div class="container" id="cntHome">
-        <h1 class="mt-5">sample</h1>
+        <h1 class="mt-5">API 인증 테스트</h1>
         <p class="lead" id="cntHomeResult">로그인이 필요합니다.</p>
     </div>
     <div class="container d-none" id="cntBasicAuth">
-        <h1 class="mt-5">/api/public</h1>
+        <h1 class="mt-5">Basic Auth 인증</h1>
         <p class="lead">API 서버 호출 결과를 출력합니다.</p>
+        <div class="alert alert-light" >
+            <a class="btn btn-outline-dark " href="#" >차량 정보 호출</a>
+            <a class="btn btn-outline-dark " href="#" >카테고리 호출</a>
+            <a class="btn btn-outline-dark " href="#" >카테고리 상세 호출</a>
+            <a class="btn btn-outline-dark " href="#" >모델 호출</a>
+            <a class="btn btn-outline-dark " href="#" >모델 상세 호출</a>
+            <hr>
+
+        </div>
+
+<!--        <button class="btn btn-outline-primary d-none" href="#" >카테고리 데이터 삽입</button>-->
+<!--        <button class="btn btn-outline-primary d-none" href="#" >모델 데이터 삽입</button>-->
+
         <div class="alert alert-secondary" role="alert">
             <h4 class="alert-heading">Result</h4>
             <hr>
@@ -62,7 +76,7 @@
         </div>
     </div>
     <div class="container d-none" id="cntApiKey">
-        <h1 class="mt-5">/api/private</h1>
+        <h1 class="mt-5">API Key 인증</h1>
         <p class="lead">API 서버 호출 결과를 출력합니다.</p>
         <div class="alert alert-secondary" role="alert">
             <h4 class="alert-heading">Result</h4>
@@ -71,7 +85,7 @@
         </div>
     </div>
     <div class="container d-none" id="cntJwt">
-        <h1 class="mt-5">/api/private-scoped</h1>
+        <h1 class="mt-5">JWT(Auth0) 인증</h1>
         <p class="lead">API 서버 호출 결과를 출력합니다.</p>
         <div class="alert alert-secondary" role="alert">
             <h4 class="alert-heading">Result</h4>
@@ -93,8 +107,11 @@
 <script src="https://cdn.auth0.com/js/auth0-spa-js/1.7/auth0-spa-js.production.js"></script>
 <script>
     let auth0 = null;
-    let token = '';
+    let loginType = '';
+    let jwtToken = '';
+    let normalToken = '';
     let config;
+
 
     const fetchAuthConfig = () => fetch("/configs/univ-config.json");
 
@@ -112,6 +129,9 @@
             audience: config.auth0[config.mode].audience,
             scope: 'openid profile email read:messages'
         });
+
+        console.log('config end >>> ');
+
     };
 
     async function checkHashParams(){
@@ -128,7 +148,25 @@
         return hashParams;
 
     }
+    async function getParam(sname) {
 
+        var params = location.search.substr(location.search.indexOf("?") + 1);
+
+        var sval = "";
+
+        params = params.split("&");
+
+        for (var i = 0; i < params.length; i++) {
+
+            temp = params[i].split("=");
+
+            if ([temp[0]] == sname) { sval = temp[1]; }
+
+        }
+
+        return sval;
+
+    }
 
     //Start
     window.onload = async() => {
@@ -136,7 +174,6 @@
 
         const query = window.location.search;
         const shouldParseResult = query.includes("code=") && query.includes("state=");
-
 
         let param = await checkHashParams();
 
@@ -163,8 +200,10 @@
 
 
         if (shouldParseResult) {
+
+
             const result = await auth0.handleRedirectCallback();
-            console.log("logged in");
+            console.log("logged in 1" + JSON.stringify(result));
             window.history.replaceState({}, document.title, "/");
         }
 
@@ -173,21 +212,29 @@
 
     //인증여부에 따른 화면 업데이트
     const updateUI = async () => {
-        const isAuthenticated = await auth0.isAuthenticated();
+        const isAuthenticated0 = await auth0.isAuthenticated();
 
-        console.log("log in??? ", isAuthenticated);
 
-        if ( !isAuthenticated ) {
+        console.log("log in???  isAuthenticated0 ", isAuthenticated0);
+
+
+        if ( !isAuthenticated0 ) {
 
             $('#btnSignOut').addClass('d-none');
-            $('#btnSignIn').removeClass('d-none');
+            //$('#btnSignInNormal').removeClass('d-none');
+            $('#btnSignInJWT').removeClass('d-none');
+
+            console.log('여기 오나? 00 ');
         }
         else {
+            console.log('여기 오나? 11 ');
             $('#btnSignOut').removeClass('d-none');
-            $('#btnSignIn').addClass('d-none');
+            //$('#btnSignInNormal').addClass('d-none');
+            $('#btnSignInJWT').addClass('d-none');
 
-            const user = await auth0.getUser();
-            console.log('user = ' + JSON.stringify(user) );
+            const user0 = await auth0.getUser();
+
+            console.log('user0 = ' + JSON.stringify(user0) );
 
             $('#cntHomeResult').text( '로그인 되었습니다.' );
             // const differentAudienceOptions = {
@@ -196,9 +243,13 @@
             // };
 
             // token = await auth0.getTokenSilently(differentAudienceOptions);
-            token = await auth0.getTokenSilently();
-            console.log("token >>> ", token);
+
+            jwtToken = await auth0.getTokenSilently();
+
+            console.log("jwtToken >>> ", jwtToken);
+
         }
+
     };
 
     //init elements
@@ -217,26 +268,33 @@
         $cntJwt.find('.result').text('loading...');
 
         let headers = new Headers();
-        console.log('Bearer ' + token);
-
-
-        console.log('token > ', token);
 
         let target = $.trim($(this).text());
 
         if ( target === 'Basic Auth' ) {
             $('main > .container').addClass('d-none');
             $cntBasicAuth.removeClass('d-none');
+            headers.append("Authorization",  'Basic ' + btoa("test:1234"));
+            fetch(config.auth0[config.mode].audience + "basic-auth/common/categories", {
+                'headers': headers
+            })
+                .then(function(res) {
+                    if ( res.status > 300 ) {
+                        throw new Error('Unauthorized');
+                    }
 
-            fetch(config.auth0[config.mode].audience + "common").then(res => res.json())
-                .then(response => $cntBasicAuth.find('.result').text(JSON.stringify(response)))
+                    return res.json();
+                })
+                .then(function(response) {
+                    $cntBasicAuth.find('.result').text(JSON.stringify(response))
+                })
                 .catch(error => $cntBasicAuth.find('.result').text(error));
         }
         else if ( target === 'API Key' ) {
             $('main > .container').addClass('d-none');
             $cntApiKey.removeClass('d-none');
             headers.append("apikey", 'qeBBGYT6w6EqhvPAOhNFxaIHp7oRYldA');
-            fetch(config.auth0[config.mode].audience + "vehicles", {
+            fetch(config.auth0[config.mode].audience + "api-key/common/categories", {
                  'headers': headers
             })
             .then(function(res) {
@@ -254,8 +312,8 @@
         else if ( target === 'JWT' ) {
             $('main > .container').addClass('d-none');
             $cntJwt.removeClass('d-none');
-            headers.append("Authorization", 'Bearer ' + token);
-            fetch(config.auth0[config.mode].audience + "common", {
+            headers.append("Authorization", 'Bearer ' + jwtToken);
+            fetch(config.auth0[config.mode].audience + "jwt/common/categories", {
                  'headers': headers
             })
             .then(function(res) {
@@ -277,12 +335,33 @@
     });
 
     //sign in button event handling
-    $('#btnSignIn').on('click', async () => {
+    $('#btnSignInJWT').on('click', async () => {
+
+        // auth0 = await createAuth0Client({
+        //     domain: config.auth0[config.mode].domain,
+        //     client_id: config.auth0[config.mode].clientId,
+        //     redirect_uri: config.auth0[config.mode].redirectUrl,
+        //     audience: config.auth0[config.mode].audience,
+        //     scope: 'openid profile email read:messages'
+        // });
+        // loginType ='JWT';
+
         await auth0.loginWithRedirect({
             redirect_uri: config.auth0[config.mode].redirectUrl
         });
     });
-
+    // $('#btnSignInNormal').on('click', async () => {
+    //     auth0 = await createAuth0Client({
+    //         domain: config.auth0[config.mode].domain,
+    //         client_id: config.auth0[config.mode].clientId,
+    //         redirect_uri: config.auth0[config.mode].redirectUrl,
+    //         scope: 'openid profile email'
+    //     });
+    //     loginType = 'NORMAL';
+    //     await auth0.loginWithRedirect({
+    //         redirect_uri: config.auth0[config.mode].redirectUrl
+    //     });
+    // });
     //sign out button event handling
     $('#btnSignOut').on('click', function() {
         auth0.logout({
