@@ -18,9 +18,13 @@ spring:
 
 api:
   vehicle:     
-    url: http://vehicle-api-svc.vehicle.svc.cluster.local
+    # url: http://vehicle-api-svc.vehicle.svc.cluster.local
+    url: http://host.docker.internal:8000/vehicle-api
+      # url: http://host.docker.internal:9720
   common:    
-    url: http://common-api-svc.common.svc.cluster.local
+    # url: http://common-api-svc.common.svc.cluster.local
+    url: http://host.docker.internal:8000/common-api
+      # url: http://host.docker.internal:9720
    
    
 hystrix:
