@@ -8,3 +8,7 @@ http://localhost:8009/hystrix
 
 ## 등록한 URL
 http://localhost:8009/mon/hystrix.stream
+
+###
+## k8s
+GET http://localhost:9720/vehicle-fe/list

@@ -9,6 +9,11 @@ server:
 spring:
   profiles: kind  
 
+  redis:
+    port: 6379
+    host: host.docker.internal
+
+
   
 
 api:

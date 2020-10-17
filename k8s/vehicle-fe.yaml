@@ -44,26 +44,26 @@ spec:
         imagePullPolicy: Never
         ports:
         - name: http
-          containerPort: 8009
-        
-      #   volumeMounts:   
-      #   - name: log-volume
-      #     mountPath: /logs   
-      # - name: fluent-bit
-      #   image: fluent/fluent-bit  
-      #   volumeMounts:   
-      #   - name: log-volume
-      #     mountPath: /logs   
-      #   - name: config  
-      #     mountPath: /fluent-bit/etc/fluent-bit.conf
-      #     subPath: fluent-bit.conf
-      #   - name: config
-      #     mountPath: /fluent-bit/etc/parsers_springboot.conf
-      #     subPath: parsers_springboot.conf
-      # volumes:
-      # - name: log-volume
-      #   emptyDir: {}     
-      # - name: config
-      #   configMap:
-      #     name: fluent-bit-config
+          containerPort: 8009        
+        volumeMounts:   
+        - name: log-volume
+          mountPath: /logs   
+          
+      - name: fluent-bit
+        image: fluent/fluent-bit  
+        volumeMounts:   
+        - name: log-volume
+          mountPath: /logs   
+        - name: config  
+          mountPath: /fluent-bit/etc/fluent-bit.conf
+          subPath: fluent-bit.conf
+        - name: config
+          mountPath: /fluent-bit/etc/parsers_springboot.conf
+          subPath: parsers_springboot.conf
+      volumes:
+      - name: log-volume
+        emptyDir: {}     
+      - name: config
+        configMap:
+          name: fluent-bit-config
         

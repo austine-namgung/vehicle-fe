@@ -7,8 +7,7 @@ build:
     envTemplate:
       template: "{{.IMAGE_NAME}}:{{.VER}}"
   artifacts:
-    # - image: saturn203/simple-api
-    # - image: saturn203/simple-api
+   
     - image: vehicle-fe
      
 # Use jib
