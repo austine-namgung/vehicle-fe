@@ -1,0 +1,62 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="header" xmlns:th="http://www.thymeleaf.org">
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+	<meta http-equiv="Cache-Control" content="No-Cache" />
+	<meta http-equiv="Pragma" content="No-Cache" />
+	<link type="text/css" rel="stylesheet" href="css/style.css"/>
+	<title>My First Web Free Board List</title>
+</head>
+<body>
+
+
+<div id="container">
+
+ 
+
+
+	<div class="content">		
+			<div id="listData">
+				<div xmlns:th="http://www.thymeleaf.org" th:fragment="dataList">
+	 
+					<div align="right">
+						<span><a href="json/list" target="new">json</a></span>
+					</div>
+					<table class="list">		 
+						<tr>
+							<th>모델ID</th>
+							<th>생산년도</th>			
+							<th>제조사</th>
+							<th>모델명</th>
+							<th>카테고리</th>
+							<th>작성일자</th>
+							<th>수정일자</th>
+						</tr>
+					
+						
+						<tr th:each="vehicle : ${vehicleList}">
+							<td width="80" th:text="${vehicle.objectId}"></td>	
+							<td width="80" th:text="${vehicle.year}"></td>	
+							<td width="80" th:text="${vehicle.make}"></td>		
+							<td width="80" th:text="${vehicle.modelName}"></td> 
+							<td width="80" th:text="${vehicle.categoryName}"></td>
+							<td width="80" th:text="${vehicle.createdAt}"></td>
+							<td width="80" th:text="${vehicle.updatedAt}"></td>
+							
+						</tr>
+					</table>
+				</div>
+			</div>	 
+	</div>
+</div>
+
+</body>
+</html>
+
+
+		 
+	
+		
+	 
+
