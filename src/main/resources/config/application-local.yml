@@ -20,7 +20,7 @@ api:
   vehicle:     
     url: http://localhost:9001
   common:   
-    url: http://locahost:9002
+    url: http://localhost:9002
    
    
 hystrix:
