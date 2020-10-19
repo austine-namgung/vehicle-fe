@@ -5,15 +5,23 @@
 server:
  port: 8009
 
- 
-spring:
-  profiles: local  
 
-  
+spring:
+  profiles: local
+
+
 
 api:
-  vehicle: 
+  vehicle:
     url: http://localhost:9001
   common:
     url: http://localhost:9002
-    
+  gateway:
+    url: http://localhost:8000
+
+auth:
+  basic-auth:
+    username: test
+    password: 1234
+  api-key: qeBBGYT6w6EqhvPAOhNFxaIHp7oRYldA
+

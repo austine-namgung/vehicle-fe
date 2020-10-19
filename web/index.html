@@ -54,75 +54,73 @@
         <p class="lead" id="cntHomeResult">로그인이 필요합니다.</p>
     </div>
     <div class="container d-none" id="cntBasicAuth">
-        <h1 class="mt-5">Basic Auth 인증</h1>
+        <h1 id="headerText" class="mt-5">Basic Auth 인증</h1>
         <p class="lead">API 서버 호출 결과를 출력합니다.</p>
         <div class="alert alert-light" >
-            <a class="btn btn-outline-dark " href="#" >차량 정보 호출</a>
-            <a class="btn btn-outline-dark " href="#" >카테고리 호출</a>
-            <a class="btn btn-outline-dark " href="#" >카테고리 상세 호출</a>
-            <a class="btn btn-outline-dark " href="#" >모델 호출</a>
-            <a class="btn btn-outline-dark " href="#" >모델 상세 호출</a>
+            <a class="btn btn-outline-dark " href="#" id="btnVehicle">차량 정보 호출</a>
+            <a class="btn btn-outline-dark " href="#" id="btnCategory">카테고리 호출</a>
+            <a class="btn btn-outline-dark " href="#" id="btnCategoryDetail">카테고리 상세 호출</a>
+            <a class="btn btn-outline-dark " href="#" id="btnModel">모델 호출</a>
+            <a class="btn btn-outline-dark " href="#" id="btnModelDetail">모델 상세 호출</a>
             <hr>
 
         </div>
 
 <!--        <button class="btn btn-outline-primary d-none" href="#" >카테고리 데이터 삽입</button>-->
 <!--        <button class="btn btn-outline-primary d-none" href="#" >모델 데이터 삽입</button>-->
-        <div class="alert alert-dark" role="alert">
-            <h4 class="alert-heading">Request</h4>
-            <hr>
-            <form>
-                <div class="form-group row">
-                    <label for="inputPassword" class="col-sm-2 col-form-label">URL</label>
-                    <div class="col-sm-10">
-                        <input type="text" class="form-control" value="http://localhost:8000/vehicles" readonly>
+        <div id="divResult" class="d-none">
+            <div class="alert alert-dark" role="alert">
+                <h4 class="alert-heading">Request</h4>
+                <hr>
+
+                    <div class="form-group row" id="divUrl">
+                        <label for="inputUrl" class="col-sm-2 col-form-label">API</label>
+                        <div class="col-sm-10">
+                            <input type="text" id="inputUrl" class="form-control" value="http://localhost:8000/vehicles" readonly>
+                        </div>
                     </div>
-                </div>
-                <div class="form-group row">
-                    <label for="inputPassword" class="col-sm-2 col-form-label">Method</label>
-                    <div class="col-sm-10">
-                        <input type="text" class="form-control" value="GET" readonly>
+                    <div class="form-group row">
+                        <label for="inputPassword" class="col-sm-2 col-form-label">Method</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" value="GET" readonly>
+                        </div>
                     </div>
-                </div>
-                <div class="form-group row">
-                    <label for="staticEmail" class="col-sm-2 col-form-label">Username</label>
-                    <div class="col-sm-10">
-                        <input type="text" class="form-control" id="staticEmail">
+                    <div class="form-group row" id="divUsername">
+                        <label for="inputUsername" class="col-sm-2 col-form-label">Username</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="inputUsername">
+                        </div>
                     </div>
-                </div>
-                <div class="form-group row">
-                    <label for="inputPassword" class="col-sm-2 col-form-label">Password</label>
-                    <div class="col-sm-10">
-                        <input type="password" class="form-control" id="inputPassword">
+                    <div class="form-group row" id="divPassword">
+                        <label for="inputPassword" class="col-sm-2 col-form-label">Password</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="inputPassword">
+                        </div>
                     </div>
-                </div>
-                <button type="submit" class="btn btn-dark">호출</button>
-            </form>
-        </div>
-        <div class="alert alert-secondary" role="alert">
-            <h4 class="alert-heading">Response</h4>
-            <hr>
-            <p class="mb-0 result">loading...</p>
-        </div>
-    </div>
-    <div class="container d-none" id="cntApiKey">
-        <h1 class="mt-5">API Key 인증</h1>
-        <p class="lead">API 서버 호출 결과를 출력합니다.</p>
-        <div class="alert alert-secondary" role="alert">
-            <h4 class="alert-heading">Result</h4>
-            <hr>
-            <p class="mb-0 result">loading...</p>
-        </div>
-    </div>
-    <div class="container d-none" id="cntJwt">
-        <h1 class="mt-5">JWT(Auth0) 인증</h1>
-        <p class="lead">API 서버 호출 결과를 출력합니다.</p>
-        <div class="alert alert-secondary" role="alert">
-            <h4 class="alert-heading">Result</h4>
-            <hr>
-            <p class="mb-0 result">loading...</p>
+                    <div class="form-group row" id="divApiKey">
+                        <label for="inputApiKey" class="col-sm-2 col-form-label">Api Key</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="inputApiKey">
+                        </div>
+                    </div>
+                    <div class="form-group row" id="divCodeId">
+                        <label for="inputCodeId" class="col-sm-2 col-form-label">Code Id</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="inputCodeId">
+                        </div>
+                    </div>
+
+                    <button type="submit" id="btnApiCall" class="btn btn-dark">호출</button>
+
+            </div>
+            <div class="alert alert-secondary" role="alert">
+                <h4 class="alert-heading">Response</h4>
+                <hr>
+                <p class="mb-0 result">호출 버튼을 눌러주세요</p>
+            </div>
         </div>
     </div>
+
 </main>
 
 <!--<footer class="footer mt-auto py-3">-->
@@ -141,8 +139,11 @@
     let jwtToken = '';
     let normalToken = '';
     let config;
-
-
+    let apiUrl = '';
+    let apiType = '';
+    let apiUrlTemp = '';
+    let apiCallType = '';
+    let headerText = '';
     const fetchAuthConfig = () => fetch("/configs/univ-config.json");
 
     //Auth0 에 대한 config load 및 Client 객체 생성
@@ -178,6 +179,22 @@
         return hashParams;
 
     }
+    async function getAccessToken(){
+
+
+            let result =
+                { grant_type: 'authorization_code',
+                    client_id: 'lELyaxEopAIqj5EfCT5ZusPnr2MeIuQN',
+                    client_secret: 'Awep6GKYxKquMUHbl0lDz64udCTAh1EyW_OGukSN8HV8NKDiZWlKaf2yDctlbFeZ',
+                    code: 'AUTHORIZATION_CODE',
+                    redirect_uri: 'https://localhost:8011' };
+        fetch('https://osc-korea.auth0.com/oauth/token', {
+            method: 'POST',
+            headers: { 'content-type': 'application/x-www-form-urlencoded' },
+            body: JSON.stringify(result)
+        })
+
+    }
     async function getParam(sname) {
 
         var params = location.search.substr(location.search.indexOf("?") + 1);
@@ -198,8 +215,11 @@
 
     }
 
+
     //Start
     window.onload = async() => {
+        await getAccessToken();
+
         await configClient();
 
         const query = window.location.search;
@@ -251,12 +271,16 @@
         if ( !isAuthenticated0 ) {
 
             $('#btnSignOut').addClass('d-none');
+
             //$('#btnSignInNormal').removeClass('d-none');
             $('#btnSignInJWT').removeClass('d-none');
 
             console.log('여기 오나? 00 ');
         }
         else {
+            if(apiCallType == 'JWT'){
+
+            }
             console.log('여기 오나? 11 ');
             $('#btnSignOut').removeClass('d-none');
             //$('#btnSignInNormal').addClass('d-none');
@@ -288,15 +312,51 @@
     let $cntApiKey = $('#cntApiKey');
     let $cntJwt = $('#cntJwt');
 
+    let $divResult              = $('#divResult');
+    let $btnVehicle         = $('#btnVehicle');
+    let $btnCategory        = $('#btnCategory');
+    let $btnCategoryDetail  = $('#btnCategoryDetail');
+    let $btnModel           = $('#btnModel');
+    let $btnModelDetail     = $('#btnModelDetail');
+    let $btnApiCall         = $('#btnApiCall');
+    let $inputUrl        = $('#inputUrl');
+    let $inputUsername = $('#inputUsername');
+    let $inputPassword = $('#inputPassword');
+    let $inputApiKey = $('#inputApiKey');
+    let $divUsername = $('#divUsername');
+    let $divPassword = $('#divPassword');
+    let $divApiKey = $('#divApiKey');
+    let $headerText = $('#headerText');
+    let $divCodeId = $('#divCodeId');
+    let $inputCodeId = $('#inputCodeId');
+    let codeType = '';
+    async function initDiv(){
+        $divUsername.addClass('d-none');
+        $divPassword.addClass('d-none');
+        $divApiKey.addClass('d-none');
+        $divCodeId.addClass('d-none');
+        $divResult.addClass('d-none');
+        if(apiCallType == 'JWT') {
+            const isAuthenticated0 = await auth0.isAuthenticated();
+            if( isAuthenticated0 ){
+                $cntBasicAuth.find('.result').text('호출 버튼을 눌러주세요');
+            } else {
+                $cntBasicAuth.find('.result').text('로그인을 먼저 해주세요');
+            }
+        } else {
+            $cntBasicAuth.find('.result').text('호출 버튼을 눌러주세요');
+        }
+        $inputCodeId.val('');
+    }
     //navigation button events handling
     $('.navbar-nav > li').on('click', function() {
         $('.navbar-nav > li').removeClass('active');
         $(this).addClass('active');
 
-        $cntBasicAuth.find('.result').text('loading...');
-        $cntApiKey.find('.result').text('loading...');
-        $cntJwt.find('.result').text('loading...');
-
+        $cntBasicAuth.find('.result').text('호출 버튼을 눌러주세요');
+        $cntApiKey.find('.result').text('호출 버튼을 눌러주세요');
+        $cntJwt.find('.result').text('호출 버튼을 눌러주세요');
+        $divResult.addClass('d-none');
         let headers = new Headers();
 
         let target = $.trim($(this).text());
@@ -304,59 +364,22 @@
         if ( target === 'Basic Auth' ) {
             $('main > .container').addClass('d-none');
             $cntBasicAuth.removeClass('d-none');
-            headers.append("Authorization",  'Basic ' + btoa("test:1234"));
-            fetch(config.auth0[config.mode].audience + "basic-auth/common/categories", {
-                'headers': headers
-            })
-                .then(function(res) {
-                    if ( res.status > 300 ) {
-                        throw new Error('Unauthorized');
-                    }
-
-                    return res.json();
-                })
-                .then(function(response) {
-                    $cntBasicAuth.find('.result').text(JSON.stringify(response))
-                })
-                .catch(error => $cntBasicAuth.find('.result').text(error));
+            $headerText.text('Basic Auth 인증');
+            apiCallType = 'Basic';
         }
         else if ( target === 'API Key' ) {
             $('main > .container').addClass('d-none');
-            $cntApiKey.removeClass('d-none');
-            headers.append("apikey", 'qeBBGYT6w6EqhvPAOhNFxaIHp7oRYldA');
-            fetch(config.auth0[config.mode].audience + "api-key/common/categories", {
-                 'headers': headers
-            })
-            .then(function(res) {
-                if ( res.status > 300 ) {
-                    throw new Error('Unauthorized');
-                }
+            $cntBasicAuth.removeClass('d-none');
+            $headerText.text('API Key 인증');
+            apiCallType = 'ApiKey';
 
-                return res.json();
-            })
-            .then(function(response) {
-                $cntApiKey.find('.result').text(JSON.stringify(response))
-            })
-            .catch(error => $cntApiKey.find('.result').text(error));
         }
         else if ( target === 'JWT' ) {
             $('main > .container').addClass('d-none');
-            $cntJwt.removeClass('d-none');
-            headers.append("Authorization", 'Bearer ' + jwtToken);
-            fetch(config.auth0[config.mode].audience + "jwt/common/categories", {
-                 'headers': headers
-            })
-            .then(function(res) {
-                if ( res.status > 300 ) {
-                    throw new Error('Unauthorized');
-                }
+            $cntBasicAuth.removeClass('d-none');
+            $headerText.text('JWT(Auth0) 인증');
+            apiCallType = 'JWT';
 
-                return res.json();
-            })
-            .then(function(response) {
-                $cntJwt.find('.result').text(JSON.stringify(response))
-            })
-            .catch(error => $cntJwt.find('.result').text(error));
         }
         else {
             $('main > .container').addClass('d-none');
@@ -364,6 +387,198 @@
         }
     });
 
+    $btnVehicle.on('click', async () => {
+        initDiv();
+        apiType = "vehicles";
+        $divResult.removeClass('d-none');
+        if(apiCallType == 'Basic'){
+            apiUrl = "basic-auth/vehicles";
+
+            $divUsername.removeClass('d-none');
+            $divPassword.removeClass('d-none');
+        } else if (apiCallType == 'ApiKey'){
+            apiUrl = "api-key/vehicles";
+            $divApiKey.removeClass('d-none');
+        } else if (apiCallType == 'JWT'){
+            apiUrl = "jwt/vehicles";
+
+        }
+        $inputUrl.val( apiUrl ) ;
+
+    });
+    $btnCategory.on('click', async () => {
+        initDiv();
+        apiType = "categories";
+        $divResult.removeClass('d-none');
+        if(apiCallType == 'Basic'){
+            apiUrl = "basic-auth/common/categories";
+            $divUsername.removeClass('d-none');
+            $divPassword.removeClass('d-none');
+        } else if (apiCallType == 'ApiKey'){
+            apiUrl = "api-key/common/categories";
+            $divApiKey.removeClass('d-none');
+        } else if (apiCallType == 'JWT'){
+            apiUrl = "jwt/common/categories";
+
+        }
+        $inputUrl.val( apiUrl ) ;
+
+    });
+    $inputCodeId.on('propertychange change keyup paste input', async () => {
+        console.log('change');
+        $inputUrl.val( "basic-auth/common/categories/" + $inputCodeId.val() ) ;
+
+        if( codeType == 'category'){
+            apiUrl = "basic-auth/common/categories/" + $inputCodeId.val();
+        } else if ( codeType == 'model') {
+            apiUrl = "basic-auth/common/models/" + $inputCodeId.val();
+        }
+    });
+    $btnCategoryDetail.on('click', async () => {
+        initDiv();
+        codeType = 'category';
+        $divResult.removeClass('d-none');
+        $divCodeId.removeClass('d-none');
+
+        if(apiCallType == 'Basic'){
+            apiUrl = "basic-auth/common/categories/{codeId}";
+            $divUsername.removeClass('d-none');
+            $divPassword.removeClass('d-none');
+        } else if (apiCallType == 'ApiKey'){
+            apiUrl = "api-key/common/categories/{codeId}";
+            $divApiKey.removeClass('d-none');
+        } else if (apiCallType == 'JWT'){
+            apiUrl = "jwt/common/categories/{codeId}";
+
+        }
+        $inputUrl.val( apiUrl ) ;
+
+    });
+    $btnModel.on('click', async () => {
+        apiType = "models";
+        initDiv();
+        $divResult.removeClass('d-none');
+        if(apiCallType == 'Basic'){
+            apiUrl = "basic-auth/common/models";
+            $divUsername.removeClass('d-none');
+            $divPassword.removeClass('d-none');
+        } else if (apiCallType == 'ApiKey'){
+            apiUrl = "api-key/common/models";
+            $divApiKey.removeClass('d-none');
+        } else if (apiCallType == 'JWT'){
+            apiUrl = "jwt/common/models";
+
+        }
+        $inputUrl.val( apiUrl ) ;
+
+    });
+    $btnModelDetail.on('click', async () => {
+        codeType = 'model';
+        initDiv();
+        $divResult.removeClass('d-none');
+        $divCodeId.removeClass('d-none');
+
+        if(apiCallType == 'Basic'){
+            apiUrl = "basic-auth/common/models/{codeId}";
+            $divUsername.removeClass('d-none');
+            $divPassword.removeClass('d-none');
+        } else if (apiCallType == 'ApiKey'){
+            apiUrl = "basic-auth/common/models/{codeId}";
+            $divApiKey.removeClass('d-none');
+        } else if (apiCallType == 'JWT'){
+            apiUrl = "basic-auth/common/models/{codeId}";
+
+        }
+        $inputUrl.val( apiUrl ) ;
+
+    });
+
+    $btnApiCall.on('click', async () => {
+        let headers = new Headers();
+        let result = {
+            username: $inputUsername.val(),
+            password: $inputPassword.val(),
+            authMethod: apiCallType,
+            accessToken: jwtToken,
+            apiKey: $inputApiKey.val(),
+            codeId: $inputCodeId.val(),
+            apiType: apiType
+        };
+        headers.append("Content-Type", "application/json");
+        fetch('http://localhost:8009/result', {
+            method: 'POST',
+            headers: headers,
+            body: JSON.stringify(result)
+        })
+        .then(function(res) {
+            if ( res.status > 300 ) {
+                throw new Error('Unauthorized');
+            }
+
+            return res.json();
+        })
+        .then(function(response) {
+            $cntBasicAuth.find('.result').text(JSON.stringify(response))
+        })
+        .catch(error => $cntBasicAuth.find('.result').text(error));
+
+        //
+        // if(apiCallType == 'Basic'){
+        //     let username = $inputUsername.val();
+        //     let password = $inputPassword.val();
+        //     headers.append("Authorization",  'Basic ' + btoa(username + ":" + password));
+        //     fetch(config.auth0[config.mode].audience + apiUrl, {
+        //         'headers': headers
+        //     })
+        //         .then(function(res) {
+        //             if ( res.status > 300 ) {
+        //                 throw new Error('Unauthorized');
+        //             }
+        //
+        //             return res.json();
+        //         })
+        //         .then(function(response) {
+        //             $cntBasicAuth.find('.result').text(JSON.stringify(response))
+        //         })
+        //         .catch(error => $cntBasicAuth.find('.result').text(error));
+        // } else if (apiCallType == 'ApiKey') {
+        //     let apiKey = $inputApiKey.val();
+        //
+        //     headers.append("apikey", apiKey);
+        //     fetch(config.auth0[config.mode].audience + apiUrl, {
+        //         'headers': headers
+        //     })
+        //         .then(function(res) {
+        //             if ( res.status > 300 ) {
+        //                 throw new Error('Unauthorized');
+        //             }
+        //
+        //             return res.json();
+        //         })
+        //         .then(function(response) {
+        //             $cntBasicAuth.find('.result').text(JSON.stringify(response))
+        //         })
+        //         .catch(error => $cntBasicAuth.find('.result').text(error));
+        // } else if (apiCallType == 'JWT') {
+        //     headers.append("Authorization", 'Bearer ' + jwtToken);
+        //     headers.append("Host", 'test.com');
+        //     fetch(config.auth0[config.mode].audience + apiUrl, {
+        //         'headers': headers
+        //     })
+        //         .then(function(res) {
+        //             if ( res.status > 300 ) {
+        //                 throw new Error('Unauthorized');
+        //             }
+        //
+        //             return res.json();
+        //         })
+        //         .then(function(response) {
+        //             $cntBasicAuth.find('.result').text(JSON.stringify(response))
+        //         })
+        //         .catch(error => $cntJwt.find('.result').text(error));
+        // }
+
+    })
     //sign in button event handling
     $('#btnSignInJWT').on('click', async () => {
 
