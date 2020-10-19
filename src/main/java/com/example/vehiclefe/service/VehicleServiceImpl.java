@@ -11,7 +11,7 @@ import com.netflix.hystrix.contrib.javanica.annotation.HystrixProperty;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.redis.core.ValueOperations;
+
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
@@ -26,18 +26,16 @@ public class VehicleServiceImpl implements VehicleService {
 
     private  WebClient vehicleWebClient;
     private  WebClient commonWebClient;
-    @Autowired
-    private  RedisManager<Code> redisManager;
+    // @Autowired
+    // private  RedisManager<Code> redisManager;
 
     public VehicleServiceImpl(@Value("${api.vehicle.url}") final String vehicleApiUrl, @Value("${api.common.url}") final String commonApiUrl) {
         vehicleWebClient = WebClient.builder().baseUrl(vehicleApiUrl)
                 .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .defaultHeader(HttpHeaders.HOST, "vehicle-api.demo.com")
                 .build();
 
         commonWebClient = WebClient.builder().baseUrl(commonApiUrl)               
                 .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)  
-                .defaultHeader(HttpHeaders.HOST, "common-api.demo.com")             
                 .build();
     }
 
@@ -56,14 +54,14 @@ public class VehicleServiceImpl implements VehicleService {
         
     }
 
-    @HystrixCommand(
-		fallbackMethod = "fallbackCommonCategoryList",
-		commandProperties = {
-			@HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "500"),
-			@HystrixProperty(name = "circuitBreaker.requestVolumeThreshold", value = "2"),
-			@HystrixProperty(name = "circuitBreaker.sleepWindowInMilliseconds", value = "2000"),
-			@HystrixProperty(name = "circuitBreaker.errorThresholdPercentage", value = "100")
-		})
+    // @HystrixCommand(
+	// 	fallbackMethod = "fallbackCommonCategoryList",
+	// 	commandProperties = {
+	// 		@HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "500"),
+	// 		@HystrixProperty(name = "circuitBreaker.requestVolumeThreshold", value = "2"),
+	// 		@HystrixProperty(name = "circuitBreaker.sleepWindowInMilliseconds", value = "2000"),
+	// 		@HystrixProperty(name = "circuitBreaker.errorThresholdPercentage", value = "100")
+	// 	})
     @Override
     public List<Code> commonCategoryList() {
         return  commonWebClient
@@ -76,14 +74,14 @@ public class VehicleServiceImpl implements VehicleService {
         
     }
 
-    @HystrixCommand(
-		fallbackMethod = "fallbackCommonModelList",
-		commandProperties = {
-			@HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "500"),
-			@HystrixProperty(name = "circuitBreaker.requestVolumeThreshold", value = "2"),
-			@HystrixProperty(name = "circuitBreaker.sleepWindowInMilliseconds", value = "2000"),
-			@HystrixProperty(name = "circuitBreaker.errorThresholdPercentage", value = "100")
-		})
+    // @HystrixCommand(
+	// 	fallbackMethod = "fallbackCommonModelList",
+	// 	commandProperties = {
+	// 		@HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "500"),
+	// 		@HystrixProperty(name = "circuitBreaker.requestVolumeThreshold", value = "2"),
+	// 		@HystrixProperty(name = "circuitBreaker.sleepWindowInMilliseconds", value = "2000"),
+	// 		@HystrixProperty(name = "circuitBreaker.errorThresholdPercentage", value = "100")
+	// 	})
     @Override
     public List<Code> commonModelList() {
         return  commonWebClient
@@ -120,19 +118,19 @@ public class VehicleServiceImpl implements VehicleService {
 
     
 
-    public List<Code> fallbackCommonCategoryList() {
-        log.info("=====error==fallbackCommonCategoryList");
+    // public List<Code> fallbackCommonCategoryList() {
+    //     log.info("=====error==fallbackCommonCategoryList");
        
-        List<Code> categoryList  = redisManager.getListValue("common::category-all");
-        return categoryList;
-    }
+    //     List<Code> categoryList  = redisManager.getListValue("common::category-all");
+    //     return categoryList;
+    // }
     
-    public List<Code> fallbackCommonModelList() {
-		log.info("=====error==fallbackCommonModelList");
+    // public List<Code> fallbackCommonModelList() {
+	// 	log.info("=====error==fallbackCommonModelList");
 		
-        List<Code> modelList  = redisManager.getListValue("common::model-all");
-        return modelList;
-    }
+    //     List<Code> modelList  = redisManager.getListValue("common::model-all");
+    //     return modelList;
+    // }
     
     
     
