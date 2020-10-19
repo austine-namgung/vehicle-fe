@@ -19,6 +19,8 @@ import lombok.RequiredArgsConstructor;
 public class VehicleController {
     private final VehicleService service;
 
+  
+
     @GetMapping("/list")    
     public String  list(Model model){
         List<Vehicle> vehicleList =  service.vehicleList();
