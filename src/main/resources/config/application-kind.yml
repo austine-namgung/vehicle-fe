@@ -1,0 +1,27 @@
+##############
+### local
+##############
+
+server:
+ port: 8009
+
+
+spring:
+  profiles: kind
+
+
+
+api:
+  vehicle:
+    url: http://host.docker.internal:9001
+  common:
+    url: http://host.docker.internal:9002
+  gateway:
+    url: http://host.docker.internal:8000
+
+#auth:
+#  basic-auth:
+#    username: test
+#    password: 1234
+#  api-key: qeBBGYT6w6EqhvPAOhNFxaIHp7oRYldA
+
