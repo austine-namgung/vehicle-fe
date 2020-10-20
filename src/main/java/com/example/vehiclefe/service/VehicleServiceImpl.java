@@ -33,13 +33,13 @@ public class VehicleServiceImpl implements VehicleService {
         vehicleWebClient = WebClient.builder().baseUrl(vehicleApiUrl)
                 .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 // kong 테스트할때 주석 푼다
-                // .defaultHeader(HttpHeaders.HOST, "vehicle-api.demo.com")
+                .defaultHeader(HttpHeaders.HOST, "vehicle-api.demo.com")
                 .build();
 
         commonWebClient = WebClient.builder().baseUrl(commonApiUrl)               
                 .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)  
                 // kong 테스트할때 주석 푼다
-                // .defaultHeader(HttpHeaders.HOST, "common-api.demo.com")             
+                .defaultHeader(HttpHeaders.HOST, "common-api.demo.com")             
                 .build();
     }
 
@@ -67,14 +67,15 @@ public class VehicleServiceImpl implements VehicleService {
 			@HystrixProperty(name = "circuitBreaker.errorThresholdPercentage", value = "100")
 		})
     @Override
-    public List<Code> commonCategoryList() {
+    public List<Code> commonCategoryList(String sleepYn) {
         return  commonWebClient
             .get()
-            .uri("/api/common/categories")
+            .uri("/api/common/categories?sleepYn="+sleepYn)
             .retrieve()
             .bodyToFlux(Code.class)
             .collectList()
             .block();
+            
         
     }
 
@@ -122,7 +123,7 @@ public class VehicleServiceImpl implements VehicleService {
 
     
 
-    public List<Code> fallbackCommonCategoryList() {
+    public List<Code> fallbackCommonCategoryList(String sleepYn) {
         log.info("=====error==fallbackCommonCategoryList");
        
         List<Code> categoryList  = redisManager.getListValue("common::category-all");

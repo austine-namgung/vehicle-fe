@@ -10,11 +10,13 @@ public interface VehicleService {
 
 	List<Vehicle> vehicleList();
 
-	List<Code> commonCategoryList();
+	List<Code> commonCategoryList(String sleepYn);
 
 	List<Code> commonModelList();
 
 	List<Vehicle> mappedCodeNameVehicleList(List<Vehicle> vehicleList, List<Code> categoryList, List<Code> modelList);
+
+
 
     
 }
