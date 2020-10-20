@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Auth0 Test Page</title>
+    <title>API 인증 Test Page</title>
 
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
     <style>
@@ -38,11 +38,11 @@
                 </li>
                 <li class="nav-item">
 <!--                    <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">private-scoped</a>-->
-                    <a class="nav-link" href="#">JWT</a>
+                    <a class="nav-link" href="#">Oauth2</a>
                 </li>
             </ul>
 <!--            <a class="btn btn-outline-primary d-none" href="#" id="btnSignInNormal">Normal Sign in</a>-->
-            <a class="btn btn-outline-primary d-none" href="#" id="btnSignInJWT">JWT Sign in</a>
+            <a class="btn btn-outline-primary d-none" href="#" id="btnSignInOauth2">Sign in</a>
             <a class="btn btn-outline-danger d-none" href="#" id="btnSignOut">Sign out</a>
         </div>
     </nav>
@@ -132,11 +132,12 @@
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
-<script src="https://cdn.auth0.com/js/auth0-spa-js/1.7/auth0-spa-js.production.js"></script>
+<script src="https://cdn.auth0.com/js/auth0-spa-js/1.12/auth0-spa-js.production.js"></script>
 <script>
     let auth0 = null;
     let loginType = '';
-    let jwtToken = '';
+    let accessToken = '';
+    let refreshToken = '';
     let normalToken = '';
     let config;
     let apiUrl = '';
@@ -157,8 +158,8 @@
             domain: config.auth0[config.mode].domain,
             client_id: config.auth0[config.mode].clientId,
             redirect_uri: config.auth0[config.mode].redirectUrl,
-            audience: config.auth0[config.mode].audience,
-            scope: 'openid profile email read:messages'
+            scope: 'openid profile email read:messages',
+            useRefreshTokens: true
         });
 
         console.log('config end >>> ');
@@ -179,22 +180,7 @@
         return hashParams;
 
     }
-    async function getAccessToken(){
 
-
-            let result =
-                { grant_type: 'authorization_code',
-                    client_id: 'lELyaxEopAIqj5EfCT5ZusPnr2MeIuQN',
-                    client_secret: 'Awep6GKYxKquMUHbl0lDz64udCTAh1EyW_OGukSN8HV8NKDiZWlKaf2yDctlbFeZ',
-                    code: 'AUTHORIZATION_CODE',
-                    redirect_uri: 'https://localhost:8011' };
-        fetch('https://osc-korea.auth0.com/oauth/token', {
-            method: 'POST',
-            headers: { 'content-type': 'application/x-www-form-urlencoded' },
-            body: JSON.stringify(result)
-        })
-
-    }
     async function getParam(sname) {
 
         var params = location.search.substr(location.search.indexOf("?") + 1);
@@ -218,7 +204,7 @@
 
     //Start
     window.onload = async() => {
-        await getAccessToken();
+        //await getAccessToken();
 
         await configClient();
 
@@ -273,18 +259,18 @@
             $('#btnSignOut').addClass('d-none');
 
             //$('#btnSignInNormal').removeClass('d-none');
-            $('#btnSignInJWT').removeClass('d-none');
+            $('#btnSignInOauth2').removeClass('d-none');
 
             console.log('여기 오나? 00 ');
         }
         else {
-            if(apiCallType == 'JWT'){
+            if(apiCallType == 'Oauth2'){
 
             }
             console.log('여기 오나? 11 ');
             $('#btnSignOut').removeClass('d-none');
             //$('#btnSignInNormal').addClass('d-none');
-            $('#btnSignInJWT').addClass('d-none');
+            $('#btnSignInOauth2').addClass('d-none');
 
             const user0 = await auth0.getUser();
 
@@ -298,19 +284,43 @@
 
             // token = await auth0.getTokenSilently(differentAudienceOptions);
 
-            jwtToken = await auth0.getTokenSilently();
+            accessToken = await auth0.getTokenSilently();
+            //refreshToken = await auth0.getIdTokenClaims();
+            //refreshToken = await auth0.getRefreshToken();
 
-            console.log("jwtToken >>> ", jwtToken);
-
+            $btnApiCall.removeClass('d-none');
+            console.log("accessToken >>> ", accessToken);
+            //console.log("refreshToken >>> ", refreshToken);
+            await migrationAccessToken();
         }
 
     };
+    async function migrationAccessToken() {
+        let headers = new Headers();
+        //headers.append("Content-Type", "application/json");
 
+        let formData = new FormData();
+        formData.append('credential.id', '1fee97fe-cc8b-432f-997a-1bff24d5b3e5');
+        formData.append('token_type', 'bearer');
+        formData.append('access_token', accessToken);
+        formData.append('expires_in', 7200);
+
+        fetch('http://localhost:8001/oauth2_tokens', {
+            method: 'POST',
+            headers: headers,
+            body: formData
+        })
+            .then(function(res) {
+                console.log('kong migration end');
+                return res.json();
+            })
+
+    }
     //init elements
     let $cntHome = $('#cntHome');
     let $cntBasicAuth = $('#cntBasicAuth');
     let $cntApiKey = $('#cntApiKey');
-    let $cntJwt = $('#cntJwt');
+    let $cntOauth2 = $('#cntOauth2');
 
     let $divResult              = $('#divResult');
     let $btnVehicle         = $('#btnVehicle');
@@ -336,12 +346,13 @@
         $divApiKey.addClass('d-none');
         $divCodeId.addClass('d-none');
         $divResult.addClass('d-none');
-        if(apiCallType == 'JWT') {
+        if(apiCallType == 'Oauth2') {
             const isAuthenticated0 = await auth0.isAuthenticated();
             if( isAuthenticated0 ){
                 $cntBasicAuth.find('.result').text('호출 버튼을 눌러주세요');
             } else {
                 $cntBasicAuth.find('.result').text('로그인을 먼저 해주세요');
+                $btnApiCall.addClass('d-none');
             }
         } else {
             $cntBasicAuth.find('.result').text('호출 버튼을 눌러주세요');
@@ -355,7 +366,7 @@
 
         $cntBasicAuth.find('.result').text('호출 버튼을 눌러주세요');
         $cntApiKey.find('.result').text('호출 버튼을 눌러주세요');
-        $cntJwt.find('.result').text('호출 버튼을 눌러주세요');
+        $cntOauth2.find('.result').text('호출 버튼을 눌러주세요');
         $divResult.addClass('d-none');
         let headers = new Headers();
 
@@ -374,11 +385,11 @@
             apiCallType = 'ApiKey';
 
         }
-        else if ( target === 'JWT' ) {
+        else if ( target === 'Oauth2' ) {
             $('main > .container').addClass('d-none');
             $cntBasicAuth.removeClass('d-none');
-            $headerText.text('JWT(Auth0) 인증');
-            apiCallType = 'JWT';
+            $headerText.text('Oauth2(Auth0) 인증');
+            apiCallType = 'Oauth2';
 
         }
         else {
@@ -399,8 +410,8 @@
         } else if (apiCallType == 'ApiKey'){
             apiUrl = "api-key/vehicles";
             $divApiKey.removeClass('d-none');
-        } else if (apiCallType == 'JWT'){
-            apiUrl = "jwt/vehicles";
+        } else if (apiCallType == 'Oauth2'){
+            apiUrl = "oauth2/vehicles";
 
         }
         $inputUrl.val( apiUrl ) ;
@@ -417,8 +428,8 @@
         } else if (apiCallType == 'ApiKey'){
             apiUrl = "api-key/common/categories";
             $divApiKey.removeClass('d-none');
-        } else if (apiCallType == 'JWT'){
-            apiUrl = "jwt/common/categories";
+        } else if (apiCallType == 'Oauth2'){
+            apiUrl = "oauth2/common/categories";
 
         }
         $inputUrl.val( apiUrl ) ;
@@ -426,16 +437,20 @@
     });
     $inputCodeId.on('propertychange change keyup paste input', async () => {
         console.log('change');
-        $inputUrl.val( "basic-auth/common/categories/" + $inputCodeId.val() ) ;
 
         if( codeType == 'category'){
             apiUrl = "basic-auth/common/categories/" + $inputCodeId.val();
+            $inputUrl.val( "basic-auth/common/categories/" + $inputCodeId.val() ) ;
+
         } else if ( codeType == 'model') {
             apiUrl = "basic-auth/common/models/" + $inputCodeId.val();
+            $inputUrl.val( "basic-auth/common/models/" + $inputCodeId.val() ) ;
+
         }
     });
     $btnCategoryDetail.on('click', async () => {
         initDiv();
+        apiType = "category";
         codeType = 'category';
         $divResult.removeClass('d-none');
         $divCodeId.removeClass('d-none');
@@ -447,16 +462,17 @@
         } else if (apiCallType == 'ApiKey'){
             apiUrl = "api-key/common/categories/{codeId}";
             $divApiKey.removeClass('d-none');
-        } else if (apiCallType == 'JWT'){
-            apiUrl = "jwt/common/categories/{codeId}";
+        } else if (apiCallType == 'Oauth2'){
+            apiUrl = "oauth2/common/categories/{codeId}";
 
         }
         $inputUrl.val( apiUrl ) ;
 
     });
     $btnModel.on('click', async () => {
-        apiType = "models";
+
         initDiv();
+        apiType = "models";
         $divResult.removeClass('d-none');
         if(apiCallType == 'Basic'){
             apiUrl = "basic-auth/common/models";
@@ -465,8 +481,8 @@
         } else if (apiCallType == 'ApiKey'){
             apiUrl = "api-key/common/models";
             $divApiKey.removeClass('d-none');
-        } else if (apiCallType == 'JWT'){
-            apiUrl = "jwt/common/models";
+        } else if (apiCallType == 'Oauth2'){
+            apiUrl = "oauth2/common/models";
 
         }
         $inputUrl.val( apiUrl ) ;
@@ -475,6 +491,7 @@
     $btnModelDetail.on('click', async () => {
         codeType = 'model';
         initDiv();
+        apiType = "model";
         $divResult.removeClass('d-none');
         $divCodeId.removeClass('d-none');
 
@@ -485,7 +502,7 @@
         } else if (apiCallType == 'ApiKey'){
             apiUrl = "basic-auth/common/models/{codeId}";
             $divApiKey.removeClass('d-none');
-        } else if (apiCallType == 'JWT'){
+        } else if (apiCallType == 'Oauth2'){
             apiUrl = "basic-auth/common/models/{codeId}";
 
         }
@@ -495,16 +512,17 @@
 
     $btnApiCall.on('click', async () => {
         let headers = new Headers();
+        headers.append("Content-Type", "application/json");
         let result = {
             username: $inputUsername.val(),
             password: $inputPassword.val(),
             authMethod: apiCallType,
-            accessToken: jwtToken,
+            accessToken: accessToken,
             apiKey: $inputApiKey.val(),
             codeId: $inputCodeId.val(),
             apiType: apiType
         };
-        headers.append("Content-Type", "application/json");
+
         fetch('http://localhost:8009/result', {
             method: 'POST',
             headers: headers,
@@ -518,9 +536,11 @@
             return res.json();
         })
         .then(function(response) {
+            console.log('response = ' + response);
+
             $cntBasicAuth.find('.result').text(JSON.stringify(response))
         })
-        .catch(error => $cntBasicAuth.find('.result').text(error));
+        .catch(error => $cntBasicAuth.find('.result').text("결과값이 없습니다."));
 
         //
         // if(apiCallType == 'Basic'){
@@ -559,8 +579,8 @@
         //             $cntBasicAuth.find('.result').text(JSON.stringify(response))
         //         })
         //         .catch(error => $cntBasicAuth.find('.result').text(error));
-        // } else if (apiCallType == 'JWT') {
-        //     headers.append("Authorization", 'Bearer ' + jwtToken);
+        // } else if (apiCallType == 'Oauth2') {
+        //     headers.append("Authorization", 'Bearer ' + accessToken);
         //     headers.append("Host", 'test.com');
         //     fetch(config.auth0[config.mode].audience + apiUrl, {
         //         'headers': headers
@@ -575,12 +595,12 @@
         //         .then(function(response) {
         //             $cntBasicAuth.find('.result').text(JSON.stringify(response))
         //         })
-        //         .catch(error => $cntJwt.find('.result').text(error));
+        //         .catch(error => $cntOauth2.find('.result').text(error));
         // }
 
     })
     //sign in button event handling
-    $('#btnSignInJWT').on('click', async () => {
+    $('#btnSignInOauth2').on('click', async () => {
 
         // auth0 = await createAuth0Client({
         //     domain: config.auth0[config.mode].domain,
@@ -589,7 +609,7 @@
         //     audience: config.auth0[config.mode].audience,
         //     scope: 'openid profile email read:messages'
         // });
-        // loginType ='JWT';
+        // loginType ='Oauth2';
 
         await auth0.loginWithRedirect({
             redirect_uri: config.auth0[config.mode].redirectUrl
