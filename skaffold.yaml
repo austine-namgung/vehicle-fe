@@ -36,6 +36,8 @@ profiles:
     deploy:    
       kubectl:
        manifests:
-         - k8s/*.yaml
+        - k8s/configmap/*.yaml
+        - k8s/gateway/*.yaml
+        - k8s/*.yaml
          
   

@@ -11,4 +11,5 @@ http://localhost:8009/mon/hystrix.stream
 
 ###
 ## k8s
-GET http://vehicle-fe.demo.com:9720/vehicle-fe/list
+
+GET http://vehicle-fe.demo.com:9720/list

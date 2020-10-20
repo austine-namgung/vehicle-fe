@@ -32,12 +32,14 @@ public class VehicleServiceImpl implements VehicleService {
     public VehicleServiceImpl(@Value("${api.vehicle.url}") final String vehicleApiUrl, @Value("${api.common.url}") final String commonApiUrl) {
         vehicleWebClient = WebClient.builder().baseUrl(vehicleApiUrl)
                 .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .defaultHeader(HttpHeaders.HOST, "vehicle-api.demo.com")
+                // kong 테스트할때 주석 푼다
+                // .defaultHeader(HttpHeaders.HOST, "vehicle-api.demo.com")
                 .build();
 
         commonWebClient = WebClient.builder().baseUrl(commonApiUrl)               
                 .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)  
-                .defaultHeader(HttpHeaders.HOST, "common-api.demo.com")             
+                // kong 테스트할때 주석 푼다
+                // .defaultHeader(HttpHeaders.HOST, "common-api.demo.com")             
                 .build();
     }
 
