@@ -13,5 +13,7 @@ public interface VehicleService {
 	List<Code> commonCategoryList();
 
 	List<Code> commonModelList();
+
+	String vehicleServerInfo();
     
 }

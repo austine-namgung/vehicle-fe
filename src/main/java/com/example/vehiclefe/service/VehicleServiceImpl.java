@@ -83,4 +83,10 @@ public class VehicleServiceImpl implements VehicleService {
 
     }
 
+    @Override
+    public String vehicleServerInfo() {
+       return webClientBuilder.build().get().uri(vehicleApiUrl+"/api/vehicles/vehicle-server").retrieve().bodyToMono(String.class).block();
+
+    }
+
 }

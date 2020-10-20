@@ -34,6 +34,12 @@ public class VehicleController {
         return   service.vehicleList();
     }
 
+    @GetMapping("/vehicle-server-info")   
+    @ResponseBody 
+    public String  serverInfo(){
+       return  service.vehicleServerInfo();
+    }
+
 
 
 }
