@@ -33,13 +33,13 @@ public class VehicleServiceImpl implements VehicleService {
         vehicleWebClient = WebClient.builder().baseUrl(vehicleApiUrl)
                 .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 // kong 테스트할때 주석 푼다
-                .defaultHeader(HttpHeaders.HOST, "vehicle-api.demo.com")
+                // .defaultHeader(HttpHeaders.HOST, "vehicle-api.demo.com")
                 .build();
 
         commonWebClient = WebClient.builder().baseUrl(commonApiUrl)               
                 .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)  
                 // kong 테스트할때 주석 푼다
-                .defaultHeader(HttpHeaders.HOST, "common-api.demo.com")             
+                // .defaultHeader(HttpHeaders.HOST, "common-api.demo.com")             
                 .build();
     }
 
