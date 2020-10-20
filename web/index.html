@@ -218,7 +218,7 @@
 
     //Start
     window.onload = async() => {
-        await getAccessToken();
+        //await getAccessToken();
 
         await configClient();
 
@@ -241,6 +241,7 @@
                 $('#cntHomeResult').text( '아직 Email 인증이 되지않았습니다. Email을 확인해주세요.' );
                 window.history.replaceState({}, document.title, "/");
             }else {
+                console.log('test ');
                 $('main > .container').addClass('d-none');
                 $cntHome.removeClass('d-none');
                 $('#cntHomeResult').text( param.error_description);
