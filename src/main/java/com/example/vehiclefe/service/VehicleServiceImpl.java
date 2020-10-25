@@ -13,6 +13,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
 @Service
 public class VehicleServiceImpl implements VehicleService {
@@ -107,6 +108,19 @@ public class VehicleServiceImpl implements VehicleService {
 
                         return vehicles;
                     }
+                    case "Oauth2": {
+                        List<Vehicle> vehicles = gatewayWebClient.mutate()
+                                .defaultHeader("Authorization", "Bearer " + apiCallDto.getAccessToken())
+                                .build()
+                                .get()
+                                .uri("/oauth2/vehicles")
+                                .retrieve()
+                                .bodyToFlux(Vehicle.class)
+                                .collectList()
+                                .block();
+
+                        return vehicles;
+                    }
                 }
                 break;
             case "categories":
@@ -146,6 +160,19 @@ public class VehicleServiceImpl implements VehicleService {
                                 .build()
                                 .get()
                                 .uri("/jwt/common/categories")
+                                .retrieve()
+                                .bodyToFlux(Code.class)
+                                .collectList()
+                                .block();
+
+                        return categories;
+                    }
+                    case "Oauth2": {
+                        List<Code> categories = gatewayWebClient.mutate()
+                                .defaultHeader("Authorization", "Bearer " + apiCallDto.getAccessToken())
+                                .build()
+                                .get()
+                                .uri("/oauth2/common/categories")
                                 .retrieve()
                                 .bodyToFlux(Code.class)
                                 .collectList()
@@ -199,6 +226,121 @@ public class VehicleServiceImpl implements VehicleService {
 
                         return categories;
                     }
+                    case "Oauth2": {
+                        List<Code> categories = gatewayWebClient.mutate()
+                                .defaultHeader("Authorization", "Bearer " + apiCallDto.getAccessToken())
+                                .build()
+                                .get()
+                                .uri("/oauth2/common/models")
+                                .retrieve()
+                                .bodyToFlux(Code.class)
+                                .collectList()
+                                .block();
+
+                        return categories;
+                    }
+                }
+                break;
+            case "category":
+                switch (apiCallDto.getAuthMethod()) {
+                    case "Basic": {
+                        String text = apiCallDto.getUsername() + ":" + apiCallDto.getPassword();
+                        String encoded = new String(Base64.getEncoder().encode(text.getBytes()));
+                        Mono<Code> category = gatewayWebClient.mutate()
+                                .defaultHeader("Authorization", "Basic " + encoded)
+                                .build()
+                                .get()
+                                .uri("/basic-auth/common/categories/"+apiCallDto.getCodeId())
+                                .retrieve()
+                                .bodyToMono(Code.class);
+
+                        return category;
+                    }
+                    case "ApiKey": {
+
+                        Mono<Code> category = gatewayWebClient.mutate()
+                                .defaultHeader("apiKey", apiCallDto.getApiKey())
+                                .build()
+                                .get()
+                                .uri("/api-key/common/categories/"+apiCallDto.getCodeId())
+                                .retrieve()
+                                .bodyToMono(Code.class);
+
+                        return category;
+                    }
+                    case "JWT": {
+                        Mono<Code> category = gatewayWebClient.mutate()
+                                .defaultHeader("Authorization", "Bearer " + apiCallDto.getAccessToken())
+                                .build()
+                                .get()
+                                .uri("/jwt/common/categories/"+apiCallDto.getCodeId())
+                                .retrieve()
+                                .bodyToMono(Code.class);
+
+                        return category;
+                    }
+                    case "Oauth2": {
+                        Mono<Code> category = gatewayWebClient.mutate()
+                                .defaultHeader("Authorization", "Bearer " + apiCallDto.getAccessToken())
+                                .build()
+                                .get()
+                                .uri("/oauth2/common/categories/"+apiCallDto.getCodeId())
+                                .retrieve()
+                                .bodyToMono(Code.class);
+
+                        return category;
+                    }
+                }
+                break;
+            case "model":
+                switch (apiCallDto.getAuthMethod()) {
+                    case "Basic": {
+                        String text = apiCallDto.getUsername() + ":" + apiCallDto.getPassword();
+                        String encoded = new String(Base64.getEncoder().encode(text.getBytes()));
+                        Mono<Code> model = gatewayWebClient.mutate()
+                                .defaultHeader("Authorization", "Basic " + encoded)
+                                .build()
+                                .get()
+                                .uri("/basic-auth/common/models/"+apiCallDto.getCodeId())
+                                .retrieve()
+                                .bodyToMono(Code.class);
+                        return model;
+                    }
+                    case "ApiKey": {
+
+                        Mono<Code> model = gatewayWebClient.mutate()
+                                .defaultHeader("apiKey", apiCallDto.getApiKey())
+                                .build()
+                                .get()
+                                .uri("/api-key/common/models/"+apiCallDto.getCodeId())
+                                .retrieve()
+                                .bodyToMono(Code.class);
+
+                        return model;
+                    }
+                    case "JWT": {
+                        Mono<Code> model = gatewayWebClient.mutate()
+                                .defaultHeader("Authorization", "Bearer " + apiCallDto.getAccessToken())
+                                .build()
+                                .get()
+                                .uri("/jwt/common/models/"+apiCallDto.getCodeId())
+                                .retrieve()
+                                .bodyToMono(Code.class);
+
+
+                        return model;
+                    }
+                    case "Oauth2": {
+                        Mono<Code> model = gatewayWebClient.mutate()
+                                .defaultHeader("Authorization", "Bearer " + apiCallDto.getAccessToken())
+                                .build()
+                                .get()
+                                .uri("/oauth2/common/models/"+apiCallDto.getCodeId())
+                                .retrieve()
+                                .bodyToMono(Code.class);
+
+                        return model;
+                    }
                 }
                 break;
         }
@@ -247,7 +389,7 @@ public class VehicleServiceImpl implements VehicleService {
             v.setModelName(model.getCodeName());
 
             return v;
-         }).collect(Collectors.toList());
+        }).collect(Collectors.toList());
 
     }
 

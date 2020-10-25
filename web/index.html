@@ -431,13 +431,18 @@
 
         if( codeType == 'category'){
             apiUrl = "basic-auth/common/categories/" + $inputCodeId.val();
+            $inputUrl.val( "basic-auth/common/categories/" + $inputCodeId.val() ) ;
+
         } else if ( codeType == 'model') {
             apiUrl = "basic-auth/common/models/" + $inputCodeId.val();
+            $inputUrl.val( "basic-auth/common/categories/" + $inputCodeId.val() ) ;
+
         }
     });
     $btnCategoryDetail.on('click', async () => {
         initDiv();
         codeType = 'category';
+        apiType = 'category';
         $divResult.removeClass('d-none');
         $divCodeId.removeClass('d-none');
 
@@ -475,6 +480,7 @@
     });
     $btnModelDetail.on('click', async () => {
         codeType = 'model';
+        apiType = 'model';
         initDiv();
         $divResult.removeClass('d-none');
         $divCodeId.removeClass('d-none');
@@ -521,7 +527,7 @@
         .then(function(response) {
             $cntBasicAuth.find('.result').text(JSON.stringify(response))
         })
-        .catch(error => $cntBasicAuth.find('.result').text(error));
+        .catch(error => $cntBasicAuth.find('.result').text("모델명이 없습니다."));
 
         //
         // if(apiCallType == 'Basic'){
