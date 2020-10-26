@@ -135,15 +135,11 @@
 <script src="https://cdn.auth0.com/js/auth0-spa-js/1.7/auth0-spa-js.production.js"></script>
 <script>
     let auth0 = null;
-    let loginType = '';
     let jwtToken = '';
-    let normalToken = '';
     let config;
     let apiUrl = '';
     let apiType = '';
-    let apiUrlTemp = '';
     let apiCallType = '';
-    let headerText = '';
     const fetchAuthConfig = () => fetch("/configs/univ-config.json");
 
     //Auth0 에 대한 config load 및 Client 객체 생성
@@ -179,41 +175,7 @@
         return hashParams;
 
     }
-    async function getAccessToken(){
 
-
-            let result =
-                { grant_type: 'authorization_code',
-                    client_id: 'lELyaxEopAIqj5EfCT5ZusPnr2MeIuQN',
-                    client_secret: 'Awep6GKYxKquMUHbl0lDz64udCTAh1EyW_OGukSN8HV8NKDiZWlKaf2yDctlbFeZ',
-                    code: 'AUTHORIZATION_CODE',
-                    redirect_uri: 'https://localhost:8011' };
-        fetch('https://osc-korea.auth0.com/oauth/token', {
-            method: 'POST',
-            headers: { 'content-type': 'application/x-www-form-urlencoded' },
-            body: JSON.stringify(result)
-        })
-
-    }
-    async function getParam(sname) {
-
-        var params = location.search.substr(location.search.indexOf("?") + 1);
-
-        var sval = "";
-
-        params = params.split("&");
-
-        for (var i = 0; i < params.length; i++) {
-
-            temp = params[i].split("=");
-
-            if ([temp[0]] == sname) { sval = temp[1]; }
-
-        }
-
-        return sval;
-
-    }
 
 
     //Start
@@ -264,45 +226,18 @@
     //인증여부에 따른 화면 업데이트
     const updateUI = async () => {
         const isAuthenticated0 = await auth0.isAuthenticated();
-
-
         console.log("log in???  isAuthenticated0 ", isAuthenticated0);
 
-
         if ( !isAuthenticated0 ) {
-
             $('#btnSignOut').addClass('d-none');
-
-            //$('#btnSignInNormal').removeClass('d-none');
             $('#btnSignInJWT').removeClass('d-none');
-
-            console.log('여기 오나? 00 ');
         }
         else {
-            if(apiCallType == 'JWT'){
-
-            }
-            console.log('여기 오나? 11 ');
             $('#btnSignOut').removeClass('d-none');
-            //$('#btnSignInNormal').addClass('d-none');
             $('#btnSignInJWT').addClass('d-none');
-
-            const user0 = await auth0.getUser();
-
-            console.log('user0 = ' + JSON.stringify(user0) );
-
             $('#cntHomeResult').text( '로그인 되었습니다.' );
-            // const differentAudienceOptions = {
-            //     audience: config.auth0[config.mode].audience,
-            //     scope: 'openid profile email read:messages'
-            // };
-
-            // token = await auth0.getTokenSilently(differentAudienceOptions);
-
             jwtToken = await auth0.getTokenSilently();
-
             console.log("jwtToken >>> ", jwtToken);
-
         }
 
     };
@@ -521,7 +456,6 @@
             if ( res.status > 300 ) {
                 throw new Error('Unauthorized');
             }
-
             return res.json();
         })
         .then(function(response) {
@@ -529,92 +463,13 @@
         })
         .catch(error => $cntBasicAuth.find('.result').text("모델명이 없습니다."));
 
-        //
-        // if(apiCallType == 'Basic'){
-        //     let username = $inputUsername.val();
-        //     let password = $inputPassword.val();
-        //     headers.append("Authorization",  'Basic ' + btoa(username + ":" + password));
-        //     fetch(config.auth0[config.mode].audience + apiUrl, {
-        //         'headers': headers
-        //     })
-        //         .then(function(res) {
-        //             if ( res.status > 300 ) {
-        //                 throw new Error('Unauthorized');
-        //             }
-        //
-        //             return res.json();
-        //         })
-        //         .then(function(response) {
-        //             $cntBasicAuth.find('.result').text(JSON.stringify(response))
-        //         })
-        //         .catch(error => $cntBasicAuth.find('.result').text(error));
-        // } else if (apiCallType == 'ApiKey') {
-        //     let apiKey = $inputApiKey.val();
-        //
-        //     headers.append("apikey", apiKey);
-        //     fetch(config.auth0[config.mode].audience + apiUrl, {
-        //         'headers': headers
-        //     })
-        //         .then(function(res) {
-        //             if ( res.status > 300 ) {
-        //                 throw new Error('Unauthorized');
-        //             }
-        //
-        //             return res.json();
-        //         })
-        //         .then(function(response) {
-        //             $cntBasicAuth.find('.result').text(JSON.stringify(response))
-        //         })
-        //         .catch(error => $cntBasicAuth.find('.result').text(error));
-        // } else if (apiCallType == 'JWT') {
-        //     headers.append("Authorization", 'Bearer ' + jwtToken);
-        //     headers.append("Host", 'test.com');
-        //     fetch(config.auth0[config.mode].audience + apiUrl, {
-        //         'headers': headers
-        //     })
-        //         .then(function(res) {
-        //             if ( res.status > 300 ) {
-        //                 throw new Error('Unauthorized');
-        //             }
-        //
-        //             return res.json();
-        //         })
-        //         .then(function(response) {
-        //             $cntBasicAuth.find('.result').text(JSON.stringify(response))
-        //         })
-        //         .catch(error => $cntJwt.find('.result').text(error));
-        // }
-
     })
     //sign in button event handling
     $('#btnSignInJWT').on('click', async () => {
-
-        // auth0 = await createAuth0Client({
-        //     domain: config.auth0[config.mode].domain,
-        //     client_id: config.auth0[config.mode].clientId,
-        //     redirect_uri: config.auth0[config.mode].redirectUrl,
-        //     audience: config.auth0[config.mode].audience,
-        //     scope: 'openid profile email read:messages'
-        // });
-        // loginType ='JWT';
-
         await auth0.loginWithRedirect({
             redirect_uri: config.auth0[config.mode].redirectUrl
         });
     });
-    // $('#btnSignInNormal').on('click', async () => {
-    //     auth0 = await createAuth0Client({
-    //         domain: config.auth0[config.mode].domain,
-    //         client_id: config.auth0[config.mode].clientId,
-    //         redirect_uri: config.auth0[config.mode].redirectUrl,
-    //         scope: 'openid profile email'
-    //     });
-    //     loginType = 'NORMAL';
-    //     await auth0.loginWithRedirect({
-    //         redirect_uri: config.auth0[config.mode].redirectUrl
-    //     });
-    // });
-    //sign out button event handling
     $('#btnSignOut').on('click', function() {
         auth0.logout({
             returnTo: config.auth0[config.mode].redirectUrl
