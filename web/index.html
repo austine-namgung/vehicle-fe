@@ -123,28 +123,16 @@
 
 </main>
 
-<!--<footer class="footer mt-auto py-3">-->
-<!--    <div class="container">-->
-<!--        <span class="text-muted">Powered by OSC Korea</span>-->
-<!--    </div>-->
-<!--</footer>-->
-
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
 <script src="https://cdn.auth0.com/js/auth0-spa-js/1.12/auth0-spa-js.production.js"></script>
 <script>
     let auth0 = null;
-    let loginType = '';
     let accessToken = '';
-    let refreshToken = '';
-    let normalToken = '';
     let config;
-    let apiUrl = '';
     let apiType = '';
-    let apiUrlTemp = '';
     let apiCallType = '';
-    let headerText = '';
     const fetchAuthConfig = () => fetch("/configs/univ-config.json");
 
     //Auth0 에 대한 config load 및 Client 객체 생성
@@ -181,27 +169,6 @@
 
     }
 
-    async function getParam(sname) {
-
-        var params = location.search.substr(location.search.indexOf("?") + 1);
-
-        var sval = "";
-
-        params = params.split("&");
-
-        for (var i = 0; i < params.length; i++) {
-
-            temp = params[i].split("=");
-
-            if ([temp[0]] == sname) { sval = temp[1]; }
-
-        }
-
-        return sval;
-
-    }
-
-
     //Start
     window.onload = async() => {
         //await getAccessToken();
@@ -233,11 +200,7 @@
                 window.history.replaceState({}, document.title, "/");
             }
         }
-
-
         if (shouldParseResult) {
-
-
             const result = await auth0.handleRedirectCallback();
             console.log("logged in 1" + JSON.stringify(result));
             window.history.replaceState({}, document.title, "/");
@@ -252,54 +215,27 @@
 
 
         console.log("log in???  isAuthenticated0 ", isAuthenticated0);
-
-
         if ( !isAuthenticated0 ) {
 
             $('#btnSignOut').addClass('d-none');
-
-            //$('#btnSignInNormal').removeClass('d-none');
             $('#btnSignInOauth2').removeClass('d-none');
-
-            console.log('여기 오나? 00 ');
         }
         else {
-            if(apiCallType == 'Oauth2'){
-
-            }
-            console.log('여기 오나? 11 ');
             $('#btnSignOut').removeClass('d-none');
-            //$('#btnSignInNormal').addClass('d-none');
             $('#btnSignInOauth2').addClass('d-none');
-
-            const user0 = await auth0.getUser();
-
-            console.log('user0 = ' + JSON.stringify(user0) );
-
             $('#cntHomeResult').text( '로그인 되었습니다.' );
-            // const differentAudienceOptions = {
-            //     audience: config.auth0[config.mode].audience,
-            //     scope: 'openid profile email read:messages'
-            // };
-
-            // token = await auth0.getTokenSilently(differentAudienceOptions);
-
             accessToken = await auth0.getTokenSilently();
-            //refreshToken = await auth0.getIdTokenClaims();
-            //refreshToken = await auth0.getRefreshToken();
 
             $btnApiCall.removeClass('d-none');
             console.log("accessToken >>> ", accessToken);
-            //console.log("refreshToken >>> ", refreshToken);
             await migrationAccessToken();
         }
 
     };
     async function migrationAccessToken() {
         let headers = new Headers();
-        //headers.append("Content-Type", "application/json");
-
         let formData = new FormData();
+
         formData.append('credential.id', '1fee97fe-cc8b-432f-997a-1bff24d5b3e5');
         formData.append('token_type', 'bearer');
         formData.append('access_token', accessToken);
@@ -368,7 +304,6 @@
         $cntApiKey.find('.result').text('호출 버튼을 눌러주세요');
         $cntOauth2.find('.result').text('호출 버튼을 눌러주세요');
         $divResult.addClass('d-none');
-        let headers = new Headers();
 
         let target = $.trim($(this).text());
 
@@ -541,92 +476,14 @@
             $cntBasicAuth.find('.result').text(JSON.stringify(response))
         })
         .catch(error => $cntBasicAuth.find('.result').text("결과값이 없습니다."));
-
-        //
-        // if(apiCallType == 'Basic'){
-        //     let username = $inputUsername.val();
-        //     let password = $inputPassword.val();
-        //     headers.append("Authorization",  'Basic ' + btoa(username + ":" + password));
-        //     fetch(config.auth0[config.mode].audience + apiUrl, {
-        //         'headers': headers
-        //     })
-        //         .then(function(res) {
-        //             if ( res.status > 300 ) {
-        //                 throw new Error('Unauthorized');
-        //             }
-        //
-        //             return res.json();
-        //         })
-        //         .then(function(response) {
-        //             $cntBasicAuth.find('.result').text(JSON.stringify(response))
-        //         })
-        //         .catch(error => $cntBasicAuth.find('.result').text(error));
-        // } else if (apiCallType == 'ApiKey') {
-        //     let apiKey = $inputApiKey.val();
-        //
-        //     headers.append("apikey", apiKey);
-        //     fetch(config.auth0[config.mode].audience + apiUrl, {
-        //         'headers': headers
-        //     })
-        //         .then(function(res) {
-        //             if ( res.status > 300 ) {
-        //                 throw new Error('Unauthorized');
-        //             }
-        //
-        //             return res.json();
-        //         })
-        //         .then(function(response) {
-        //             $cntBasicAuth.find('.result').text(JSON.stringify(response))
-        //         })
-        //         .catch(error => $cntBasicAuth.find('.result').text(error));
-        // } else if (apiCallType == 'Oauth2') {
-        //     headers.append("Authorization", 'Bearer ' + accessToken);
-        //     headers.append("Host", 'test.com');
-        //     fetch(config.auth0[config.mode].audience + apiUrl, {
-        //         'headers': headers
-        //     })
-        //         .then(function(res) {
-        //             if ( res.status > 300 ) {
-        //                 throw new Error('Unauthorized');
-        //             }
-        //
-        //             return res.json();
-        //         })
-        //         .then(function(response) {
-        //             $cntBasicAuth.find('.result').text(JSON.stringify(response))
-        //         })
-        //         .catch(error => $cntOauth2.find('.result').text(error));
-        // }
-
     })
     //sign in button event handling
     $('#btnSignInOauth2').on('click', async () => {
-
-        // auth0 = await createAuth0Client({
-        //     domain: config.auth0[config.mode].domain,
-        //     client_id: config.auth0[config.mode].clientId,
-        //     redirect_uri: config.auth0[config.mode].redirectUrl,
-        //     audience: config.auth0[config.mode].audience,
-        //     scope: 'openid profile email read:messages'
-        // });
-        // loginType ='Oauth2';
-
         await auth0.loginWithRedirect({
             redirect_uri: config.auth0[config.mode].redirectUrl
         });
     });
-    // $('#btnSignInNormal').on('click', async () => {
-    //     auth0 = await createAuth0Client({
-    //         domain: config.auth0[config.mode].domain,
-    //         client_id: config.auth0[config.mode].clientId,
-    //         redirect_uri: config.auth0[config.mode].redirectUrl,
-    //         scope: 'openid profile email'
-    //     });
-    //     loginType = 'NORMAL';
-    //     await auth0.loginWithRedirect({
-    //         redirect_uri: config.auth0[config.mode].redirectUrl
-    //     });
-    // });
+
     //sign out button event handling
     $('#btnSignOut').on('click', function() {
         auth0.logout({
