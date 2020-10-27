@@ -38,4 +38,9 @@ profiles:
       kubectl:
        manifests:
          - k8s/*.yaml
-
+portForward:
+- resourceType: deployment
+  resourceName: vehicle-fe
+  namespace: front
+  port: 8009
+  localPort: 8009
